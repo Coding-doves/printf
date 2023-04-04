@@ -62,7 +62,7 @@ int print_pcent(va_list pf)
         return (0);
 }
 
-/************************* PRINT INT *************************/
+/************************* PRINT INT **************************/
 /**
  * print_dec - function converts an integer to a string
  * @pf: The integer to convert
