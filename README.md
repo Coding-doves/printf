@@ -1,7 +1,24 @@
-The "printf" project is a programming exercise that is commonly used in introductory computer science courses to help students learn the basics of the C programming language. The goal of the project is to create a function that can print formatted output to the console. The printf function is a powerful tool that can be used to display strings, numbers, and other data types in a variety of ways.
+**_printf**
+	_printf is a custom implementation of the C standard library function printf(). It provides a way to print formatted output to the console or to a file.
 
-More detail
+**Usage**
+	The function prototype for _printf is as follows:
+	int _printf(const char *format, ...);
+	The first argument is a format string that specifies how the output should be formatted. The remaining arguments are values to be printed, which are inserted into the format string using format specifiers.
+	Format specifiers begin with the % character, followed by a conversion character that indicates the type of data to be printed. For example, %s is used to print a string, %d is used to print a decimal integer, and %f is used to print a floating-point number.
 
-In the printf project, students are tasked with creating a simplified version of the printf function, which can handle a limited set of formatting options. The function takes a format string as input, which specifies how the output should be formatted, and a variable number of arguments, which contain the data to be printed. The function then processes the format string and outputs the formatted data to the console.
+**_printf supports the following format specifiers:**
 
-The printf project is a valuable learning experience for students, as it helps them develop their programming skills and gain a deeper understanding of how programming languages work. By completing the project, students learn about C syntax, string manipulation, memory allocation, and other important programming concepts.
+	%c: print a single character,
+	%s: print a string,
+	%d: print a decimal integer,
+	%i: print a decimal integer,
+	%b: print an unsigned integer in binary format,
+	%u: print an unsigned decimal integer,
+	%o: print an unsigned octal integer,
+	%x: print an unsigned hexadecimal integer (lowercase),
+	%X: print an unsigned hexadecimal integer (uppercase),
+	%: print a literal % character
+
+**Return value**
+	_printf returns the number of characters printed (excluding the null byte used to end output to strings). If an error occurs, it returns -1.
