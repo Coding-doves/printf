@@ -1,66 +1,91 @@
 #include "main.h"
 
-void print_buffer(char buffer[], int *buff_ind);
-
+int (*fmt_specifier(const char *fmt))(va_list);
 /**
- * _printf - Printf function
- * @format: format.
- * Return: Printed chars.
+ * _printf - prints any given output to the screen
+ * @format: string
+ * @...: represent large number of argument
+ * Return: -1 for null or total times looped
  */
+
 int _printf(const char *format, ...)
 {
-	int i, printed = 0, printed_chars = 0;
-	int flags, width, precision, size, buff_ind = 0;
-	va_list list;
-	char buffer[BUFF_SIZE];
+        va_list pf;
 
-	if (format == NULL)
-		return (-1);
+        int i = 0, count = 0, total = 0;
+        int (*f)(va_list);
 
-	va_start(list, format);
+        va_start(pf, format);
 
-	for (i = 0; format && format[i] != '\0'; i++)
-	{
+        if (format == NULL) /*prevent null pointer*/
+                return (-1);
+        while (format[i])
+        {
 		if (format[i] != '%')
-		{
-			buffer[buff_ind++] = format[i];
-			if (buff_ind == BUFF_SIZE)
-				print_buffer(buffer, &buff_ind);
-			/* write(1, &format[i], 1);*/
-			printed_chars++;
-		}
-		else
-		{
-			print_buffer(buffer, &buff_ind);
-			flags = get_flags(format, &i);
-			width = get_width(format, &i, list);
-			precision = get_precision(format, &i, list);
-			size = get_size(format, &i);
-			++i;
-			printed = handle_print(format, &i, list, buffer,
-				flags, width, precision, size);
-			if (printed == -1)
-				return (-1);
-			printed_chars += printed;
-		}
-	}
-
-	print_buffer(buffer, &buff_ind);
-
-	va_end(list);
-
-	return (printed_chars);
+                {
+                        count = write(1, &format[i], 1); /*strings without format specifier*/
+                        total += count;
+                        i++;
+                        continue;
+                }
+                if (format[i] == '%')
+                {
+                        f = fmt_specifier(&format[i + 1]); /*building on format specifier*/
+                        if (f != NULL)
+                        {
+                                count = f(pf);
+                                total += count;
+                                i += 2;
+                                continue;
+                        }
+                        if (format[i + 1] == '\0')
+                                break;
+                        if (format[i + 1] != '\0')
+                        {
+                                count = write(1, &format[i + 1], 1);
+				      total += count;
+                                i += 2;
+                                continue;
+                        }
+                } i++;
+        } return (total);
+        va_end(pf);
 }
 
 /**
- * print_buffer - Prints the contents of the buffer if it exist
- * @buffer: Array of chars
- * @buff_ind: Index at which to add next char, represents the length.
+ * fmt_specifier - function that checks for valid format specifier
+ * and assigns an appropriate function for printing
+ * @fmt: input the function takes
+ * Return: null or char
  */
-void print_buffer(char buffer[], int *buff_ind)
-{
-	if (*buff_ind > 0)
-		write(1, &buffer[0], *buff_ind);
 
-	*buff_ind = 0;
+int (*fmt_specifier(const char *fmt))(va_list)
+{
+        int i;
+
+        /* struct array that holds all format specifier*/
+        fun_t my_array[11] = {
+                {"c", print_char},
+		{"s", print_str},
+                {"%", print_pcent},
+                {"d", print_dec},
+                {"i", print_dec},
+                {"b", print_binary},
+                {"u", print_u},
+                {"o", print_octal},
+                {"x", print_hex},
+                {"X", print_HEX},
+                {NULL, NULL}
+        };
+
+        /* loops through struct, searching for format requested*/
+        /* returns null if not found*/
+        for (i = 0; my_array[i].t != NULL; i++)
+        {
+                if (*(my_array[i].t) == *fmt)
+                {
+                        return (my_array[i].f);
+                }
+        }
+        return (NULL);
 }
